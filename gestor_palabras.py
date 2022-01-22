@@ -141,7 +141,7 @@ class GestorPalabras:
         self.words = self.filter_by_incorrect_chars()
 
         self.words = self.rank_words()
-        print("Eligiendo entre {} posibles palabras...".format(len(self.words)))
+        print("\n\nEligiendo entre {} posibles palabras...".format(len(self.words)))
         print(self.words[:20], ' ...')
         return self.words[0]
 
