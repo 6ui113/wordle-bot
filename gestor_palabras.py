@@ -64,8 +64,9 @@ class GestorPalabras:
         for word in self.words:
             aux_dict[word] = self.rank_word(word)
 
-        if self.num_round == 0:
-            # Si es la primera ronda premia a las palabras con más caracteres diferentes entre sí
+        if self.num_round == 0 or len(self.present_chars) < 3:
+            # Si es la primera ronda o si todavía no se han encontrado 3 letras presentes
+            # premia a las palabras con más caracteres diferentes entre sí
             for key in aux_dict:
                 aux_dict[key] *= len(set(key))
 
