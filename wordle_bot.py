@@ -68,7 +68,6 @@ class Partida:
             self.tecla['ENTER'].click()
 
     def lee_respuesta(self, n_ronda: int):
-        time.sleep(1)
         resultado = []
         for casilla in self.wordle[n_ronda]:
             clases = casilla.get_attribute("class")
@@ -96,14 +95,20 @@ class Partida:
 
         respuesta = self.lee_respuesta(self.n_ronda)
         print(respuesta)
+        if respuesta == ['correcta', 'correcta', 'correcta', 'correcta', 'correcta']:
+            return True
         self.palabra.procesa_respuesta(respuesta)
         time.sleep(1)
         self.n_ronda += 1
         self.palabra.num_ronda = self.n_ronda
 
+        return False
+
     def start(self):
         for num_round in range(self.n_rondas):
-            partida.ronda()
+            if partida.ronda():
+                print('Ha ganado el bot!')
+                break  # Se gana la partida antes de la última ronda.
 
 
 if __name__ == '__main__':
