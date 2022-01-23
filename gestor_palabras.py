@@ -32,55 +32,6 @@ class GestorPalabras:
         for elem in self.char_freq:
             elem = Diccionario.dict_ratios(elem)
 
-    def rank_word(self, word):
-        """
-        PRE:
-        [word] es un string que contiene una palabra
-        [present_chars] es una lista de caracteres que obligatoriamente pertenecen a la palabra.
-
-        POST:
-        Para cada caracter perteneciente a [word], se lee el peso de ese caracter en el diccionario [char_freq] para
-        esa posición en específico y se suma a la variable [rank] para establecer una puntuación.
-        Devuelve el valor de [rank]
-        """
-        rank = 0
-        i = 0
-        for c in word.upper():
-            try:
-                # Calcula la puntuación sumando los ratios de cada letra en cada posición
-                rank += self.char_freq[i][c]
-                # Además si contiene letras que seguro están presentes, gana puntuación extra de manera proporcional
-                # al número de huecos restantes
-                if c in self.present_chars:
-                    rank += self.num_guessed / self.num_chars
-            except KeyError as e:
-                pass
-            i += 1
-        return rank
-
-    def rank_words(self):
-        aux_dict = {}
-        aux_keys = []
-        for word in self.words:
-            aux_dict[word] = self.rank_word(word)
-
-        if self.num_round == 0 or len(self.present_chars) < 3:
-            # Si es la primera ronda o si todavía no se han encontrado 3 letras presentes
-            # premia a las palabras con más caracteres diferentes entre sí
-            for key in aux_dict:
-                aux_dict[key] *= len(set(key))
-
-        aux_dict = Diccionario.sort_dict(aux_dict)
-
-        pp = 0
-        for elem in aux_dict:
-            if pp >= 100:
-                break
-            print(f'{elem}: {aux_dict[elem]}', end=', ')
-            pp += 1
-
-        return [key for key, value in aux_dict.items()]
-
     def filter_by_correct_chars(self):
         aux_list = self.words.copy()
 
@@ -123,6 +74,58 @@ class GestorPalabras:
 
         return aux_list
 
+    def rank_word(self, word):
+        """
+        PRE:
+        [word] es un string que contiene una palabra
+        [present_chars] es una lista de caracteres que obligatoriamente pertenecen a la palabra.
+
+        POST:
+        Para cada caracter perteneciente a [word], se lee el peso de ese caracter en el diccionario [char_freq] para
+        esa posición en específico y se suma a la variable [rank] para establecer una puntuación.
+        Devuelve el valor de [rank]
+        """
+        rank = 0
+        i = 0
+        for c in word.upper():
+            try:
+                # Calcula la puntuación sumando los ratios de cada letra en cada posición
+                rank += self.char_freq[i][c]
+                # Además si contiene letras que seguro están presentes, gana puntuación extra de manera proporcional
+                # al número de huecos restantes
+                if c in self.present_chars:
+                    rank += self.num_guessed / self.num_chars
+            except KeyError as e:
+                pass
+            i += 1
+        return rank
+
+    def rank_words(self):
+        aux_dict = {}
+        aux_keys = []
+        for word in self.words:
+            aux_dict[word] = self.rank_word(word)
+
+        if self.num_round == 0 or len(self.present_chars) < 3:
+            # Si es la primera ronda o si todavía no se han encontrado 3 letras presentes
+            # premia a las palabras con más caracteres diferentes entre sí
+            for key in aux_dict:
+                aux_dict[key] *= len(set(key))
+
+        aux_dict = Diccionario.sort_dict(aux_dict)
+
+        # Imprimimos las 50 palabras con más peso y su valor
+        printed_words = 0
+        for elem in aux_dict:
+            if printed_words >= 50:
+                break
+            print(f'{elem}: {aux_dict[elem]:.6}', end='\t\t')
+            if not printed_words % 5:
+                print() # Salto de línea
+            printed_words += 1
+
+        return [key for key, value in aux_dict.items()]
+
     def calculate_guessed(self):
         n = 0
         for elem in self.guessed:
@@ -141,8 +144,8 @@ class GestorPalabras:
         self.words = self.filter_by_present_chars()
         self.words = self.filter_by_incorrect_chars()
 
-        self.words = self.rank_words()
         print("\n\nEligiendo entre {} posibles palabras...".format(len(self.words)))
-        print(self.words[:20], ' ...')
+        self.words = self.rank_words()
+
         return self.words[0]
 
