@@ -123,7 +123,7 @@ class Diccionario:
                     try:
                         char_freq[i][c] += 1
                     except KeyError as e:
-                        char_freq[i][c] = 0
+                        char_freq[i][c] = 1
                     finally:
                         i += 1
 
