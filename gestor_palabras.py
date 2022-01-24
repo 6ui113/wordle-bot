@@ -119,7 +119,7 @@ class GestorPalabras:
         for elem in aux_dict:
             if printed_words >= 50:
                 break
-            print(f'{elem}: {aux_dict[elem]:.6}', end='\t\t')
+            print(f'{elem}: {float(aux_dict[elem]):.6}', end='\t\t')
             if not printed_words % 5:
                 print() # Salto de línea
             printed_words += 1
