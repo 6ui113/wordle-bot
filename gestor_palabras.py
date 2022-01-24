@@ -121,7 +121,7 @@ class GestorPalabras:
                 break
             print(f'{elem}: {float(aux_dict[elem]):.6}', end='\t\t')
             if not printed_words % 5:
-                print() # Salto de línea
+                print()  # Salto de línea
             printed_words += 1
 
         return [key for key, value in aux_dict.items()]
@@ -139,6 +139,9 @@ class GestorPalabras:
         """
         self.num_guessed = self.calculate_guessed()
         print('Letras adivinadas: {}. Caracteres presentes: {}'.format(self.num_guessed, self.present_chars))
+
+        if self.num_round != 0:
+            self.words.remove(self.words[0])  # Elimina la última palabra probada
 
         self.words = self.filter_by_correct_chars()
         self.words = self.filter_by_present_chars()
