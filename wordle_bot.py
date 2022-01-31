@@ -19,7 +19,7 @@ class Partida:
 
         self.driver = webdriver.Firefox()
         self.driver.get(url)
-        self.driver.set_window_size(480, 720)
+        self.driver.set_window_size(480, 840)
 
         self.pantalla_bienvenida()
         self.wordle = self.get_wordle()
@@ -30,7 +30,8 @@ class Partida:
     def pantalla_bienvenida(self):
         # Si sale la pantalla de bienvenida le da al botón de jugar
         try:
-            elem = self.driver.find_element(By.XPATH, "//*[text()='Jugar!']")
+            time.sleep(1)
+            elem = self.driver.find_element(By.XPATH, "//*[text()='¡Jugar!']")
             elem.click()
         except NoSuchElementException as e:
             pass
@@ -65,7 +66,7 @@ class Partida:
         for c in palabra_a_escribir:
             self.tecla[c].click()
         else:
-            self.tecla['ENTER'].click()
+            self.tecla['ENVIAR'].click()
 
     def lee_respuesta(self, n_ronda: int):
         resultado = []
