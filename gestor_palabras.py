@@ -10,7 +10,7 @@ class GestorPalabras:
 
     num_chars: int
     words: list[str]
-    char_freq: list[dict] # La clave de cada dict es un char y el valor un flotante de 0 a 1 que indica su peso.
+    char_freq: list[dict]  # La clave de cada dict es un char y el valor un flotante de 0 a 1 que indica su peso.
     present_chars: list[chr]
     incorrect_chars: list[chr]
     guessed: list[bool]
@@ -33,46 +33,36 @@ class GestorPalabras:
             elem = Diccionario.dict_ratios(elem)
 
     def filter_by_correct_chars(self):
-        aux_list = self.words.copy()
-
-        for word in aux_list:
-            for position in self.char_freq:
+        for word in self.words.copy():
+            for i, position in enumerate(self.char_freq):
                 if len(position) == 1:
-                    for elem in position:
-                        if elem not in word:
-                            try:
-                                aux_list.remove(word)
-                            except ValueError:
-                                # Ya se había eliminado
-                                pass
-
-        return aux_list
+                    if list(position.keys())[0] != word[i]:
+                        try:
+                            self.words.remove(word)
+                        except ValueError:
+                            # Ya se había eliminado
+                            pass
 
     def filter_by_present_chars(self):
-        aux_list = self.words.copy()
-
         # Descartamos palabras que no contengan los caracteres que se sabe que están presentes
         if self.present_chars:
             for c in self.present_chars:
                 new_list = []
-                for word in aux_list:
+                for word in self.words:
                     if c in word:
                         new_list.append(word)
-                aux_list = new_list.copy()
-
-        return aux_list
+                self.words = new_list
 
     def filter_by_incorrect_chars(self):
-        aux_list = self.words.copy()
-
         # Descartamos palabras que contienen caracteres incorrectos
         if self.incorrect_chars:
             for c in self.incorrect_chars:
-                for word in aux_list:
+                for word in self.words.copy():
                     if c in word and c not in self.present_chars:
-                        aux_list.remove(word)
-
-        return aux_list
+                        try:
+                            self.words.remove(word)
+                        except ValueError:
+                            pass
 
     def rank_word(self, word):
         """
@@ -102,15 +92,13 @@ class GestorPalabras:
 
     def rank_words(self):
         aux_dict = {}
-        aux_keys = []
+
         for word in self.words:
             aux_dict[word] = self.rank_word(word)
 
-        if self.num_round == 0 or len(self.present_chars) < 3:
-            # Si es la primera ronda o si todavía no se han encontrado 3 letras presentes
-            # premia a las palabras con más caracteres diferentes entre sí
-            for key in aux_dict:
-                aux_dict[key] *= len(set(key))
+        # Premia a las palabras con más caracteres diferentes entre sí
+        for key in aux_dict:
+            aux_dict[key] *= len(set(key))
 
         aux_dict = Diccionario.sort_dict(aux_dict)
 
@@ -140,12 +128,12 @@ class GestorPalabras:
         self.num_guessed = self.calculate_guessed()
         print('Letras adivinadas: {}. Caracteres presentes: {}'.format(self.num_guessed, self.present_chars))
 
-        if self.num_round != 0:
+        if self.num_round:
             self.words.remove(self.words[0])  # Elimina la última palabra probada
 
-        self.words = self.filter_by_correct_chars()
-        self.words = self.filter_by_present_chars()
-        self.words = self.filter_by_incorrect_chars()
+        self.filter_by_incorrect_chars()
+        self.filter_by_present_chars()
+        self.filter_by_correct_chars()
 
         print("\n\nEligiendo entre {} posibles palabras...".format(len(self.words)))
         self.words = self.rank_words()
