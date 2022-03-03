@@ -24,7 +24,7 @@ class GestorPalabras:
         self.char_freq = Diccionario.char_frequency(num_chars)
         self.present_chars = []
         self.incorrect_chars = []
-        self.guessed = [False, False, False, False, False]
+        self.guessed = [False] * self.num_chars
         self.num_guessed = 0
         self.num_round = 0
 
