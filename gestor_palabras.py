@@ -9,6 +9,7 @@ class GestorPalabras:
     """
 
     num_chars: int
+    tildes: bool
     words: list[str]
     char_freq: list[dict]  # La clave de cada dict es un char y el valor un flotante de 0 a 1 que indica su peso.
     present_chars: list[chr]
@@ -17,11 +18,12 @@ class GestorPalabras:
     num_guessed: int
     num_round: int
 
-    def __init__(self, num_chars):
+    def __init__(self, num_chars, tildes):
         print('Creando GestorPalabras...')
         self.num_chars = num_chars
-        self.words = Diccionario.get_words(num_chars)
-        self.char_freq = Diccionario.char_frequency(num_chars)
+        self.tildes = tildes
+        self.words = Diccionario.get_words(num_chars, tildes)
+        self.char_freq = Diccionario.char_frequency(num_chars, tildes)
         self.present_chars = []
         self.incorrect_chars = []
         self.guessed = [False] * self.num_chars

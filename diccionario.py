@@ -41,7 +41,7 @@ class Diccionario:
         return new_word
 
     @classmethod
-    def extract_words(cls, num_chars, encoding='utf-8'):
+    def extract_words(cls, num_chars, tildes, encoding='utf-8'):
         """
         Lee cada línea de un fichero de entrada y si la longitud de la línea leída corresponde
         con el número de caracteres especificado en [num_chars], escribe la línea en el fichero de salida.
@@ -50,7 +50,10 @@ class Diccionario:
 
         Por ejemplo, sirve para extraer todas las palabras de 5 letras de un fichero con palabra por línea.
         """
-        path_out = cls.SELECTED_WORDS + '_' + str(num_chars) + '_chars'
+        contildes = ''
+        if tildes:
+            contildes += '_tildes'
+        path_out = cls.SELECTED_WORDS + '_' + str(num_chars) + '_chars'  + contildes
         with open(cls.PATH_DICTIONARY, 'r', encoding=encoding) as f_in:
             with open(path_out, 'w', encoding=encoding) as f_out:
                 while True:
@@ -58,7 +61,9 @@ class Diccionario:
                     if line == '':
                         break
                     if len(line.strip('\n')) == num_chars:
-                        f_out.write(cls.remove_word_accents(line.upper()))
+                        if not tildes:
+                            line = Diccionario.remove_word_accents(line)
+                        f_out.write(line.upper())
 
     @classmethod
     def sort_dict(cls, dict_in: dict, reverse=True) -> dict:
@@ -93,7 +98,7 @@ class Diccionario:
         return dict_in
 
     @classmethod
-    def char_frequency(cls, num_chars, encoding='utf-8'):
+    def char_frequency(cls, num_chars, tildes, encoding='utf-8'):
         """
         Para un fichero de entrada dado [f_in] cuenta el número de ocurrencias de cada caracter en cada posición y en
         base al porcentaje de veces que aparece le da un peso entre 0 y 1.
@@ -106,8 +111,11 @@ class Diccionario:
         Ejemplo de salida:
         [{'a': 0.70, 'o': 0.18, 'r': 0.12}, {'e': 0.50, 'i': 0.50}]
         """
+        contildes = ''
+        if tildes:
+            contildes += '_tildes'
         char_freq = []
-        f_in = cls.SELECTED_WORDS + '_' + str(num_chars) + '_chars'
+        f_in = cls.SELECTED_WORDS + '_' + str(num_chars) + '_chars' + contildes
         for n in range(num_chars):
             char_freq.append({})
 
@@ -135,7 +143,7 @@ class Diccionario:
         return char_freq
 
     @classmethod
-    def get_words(cls, num_chars, encoding='utf-8'):
+    def get_words(cls, num_chars, tildes, encoding='utf-8'):
         """
         Para un número de caracteres dado, devuelve una lista de palabras leídas del diccionario de la lengua que se
         esté usando.
@@ -143,7 +151,10 @@ class Diccionario:
         Si el fichero con las palabras de [num_chars] letras no existe, lo crea, analizando el diccionario por defecto
         que se haya establecido en la contante [PATH_DICTIONARY].
         """
-        path_in = cls.SELECTED_WORDS + '_' + str(num_chars) + '_chars'
+        contildes = ''
+        if tildes:
+            contildes += '_tildes'
+        path_in = cls.SELECTED_WORDS + '_' + str(num_chars) + '_chars' + contildes
         words = []
         try:
             with open(path_in, 'r', encoding=encoding) as f:
@@ -153,6 +164,6 @@ class Diccionario:
                         break
                     words.append(line.upper())
         except FileNotFoundError as e:
-            cls.extract_words(num_chars)
-            words = cls.get_words(num_chars)
+            cls.extract_words(num_chars, tildes)
+            words = cls.get_words(num_chars, tildes)
         return words
