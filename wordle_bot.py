@@ -102,7 +102,7 @@ class Partida:
 
         respuesta = self.lee_respuesta(self.n_ronda)
         print(respuesta)
-        if respuesta == ['correcta', 'correcta', 'correcta', 'correcta', 'correcta']:
+        if respuesta == ['correcta'] * self.n_letras:
             return True
         self.palabra.procesa_respuesta(respuesta)
         time.sleep(1)
