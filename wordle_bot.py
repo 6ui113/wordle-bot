@@ -39,7 +39,9 @@ class Partida:
     def get_wordle(self):
         wordle = []
         # Localiza la rejilla y coge las referencias a cada línea en una lista de WebElements
-        filas = self.driver.find_elements(By.CSS_SELECTOR, "div.grid.grid-cols-5.gap-1.w-full")
+        filas = self.driver.find_elements(By.CSS_SELECTOR, "div.grid.grid-cols-5.w-full")
+        if not filas:
+            filas = self.driver.find_elements(By.CSS_SELECTOR, "div.grid.grid-cols-7.w-full")
         for elem in filas:
             # Cogemos una referencia a cada cuadro dentro de cada fila
             wordle.append(elem.find_elements(
@@ -113,6 +115,6 @@ class Partida:
 
 
 if __name__ == '__main__':
-    partida = Partida("https://wordle.danielfrg.com/")
+    partida = Partida("https://wordle.danielfrg.com/tildes")
     partida.start()
 
