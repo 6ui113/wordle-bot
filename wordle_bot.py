@@ -13,6 +13,7 @@ class Partida:
     n_letras: int
     palabra: Palabra
     n_ronda: int
+    tildes: bool
 
     def __init__(self, url):
         os.environ['PATH'] += 'C:/SeleniumDrivers'
@@ -24,7 +25,8 @@ class Partida:
         self.pantalla_bienvenida()
         self.wordle = self.get_wordle()
         self.tecla = self.get_teclado()
-        self.palabra = Palabra(self.n_letras)
+        self.tildes = 'Á' in self.tecla
+        self.palabra = Palabra(self.n_letras, self.tildes)
         self.n_ronda = 0
 
     def pantalla_bienvenida(self):
@@ -50,6 +52,7 @@ class Partida:
             ))
 
         print('Localizadas referencias a {} filas con {} casillas en cada fila'.format(len(wordle), len(wordle[0])))
+
         self.n_rondas = len(wordle)
         self.n_letras = len(wordle[0])
 
@@ -62,6 +65,7 @@ class Partida:
             teclas = fila.find_elements(By.TAG_NAME, 'button')
             for t in teclas:
                 tecla[t.text] = t
+
         return tecla
 
     def escribe_palabra(self, palabra_a_escribir: str):
