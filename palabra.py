@@ -10,9 +10,9 @@ class Palabra:
     gp: GestorPalabras
     num_ronda: int
 
-    def __init__(self, n_letras):
+    def __init__(self, n_letras, tildes):
         print('Creando objeto Palabra de {} letras...'.format(n_letras))
-        self.gp = GestorPalabras(n_letras)
+        self.gp = GestorPalabras(n_letras, tildes)
         self.num_ronda = 0
 
     def procesa_respuesta(self, respuesta) -> bool:
