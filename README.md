@@ -8,6 +8,4 @@ La clase Diccionario gestiona la entrada y salida con el S.O. para leer y escrib
 
 Aunque el proyecto se ha desarrollado y probado en el wordle en español (https://wordle.danielfrg.com/) está pensado para poder usarse con cualquier lengua.
 
-Cualquier duda se me puede contactar por Twitter.
-https://twitter.com/__6113
 
